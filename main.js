@@ -3,7 +3,8 @@ const electron = require('electron')
 const app = electron.app
 // Module to create native browser window.
 const BrowserWindow = electron.BrowserWindow
-
+const ipc = electron.ipcMain
+const dialog = electron.dialog
 const path = require('path')
 const url = require('url')
 
@@ -13,7 +14,7 @@ let mainWindow
 
 function createWindow () {
   // Create the browser window.
-  mainWindow = new BrowserWindow({width: 800, height: 600})
+  mainWindow = new BrowserWindow({width: 800, height: 600, minWidth: 600, minHeight:500})
 
   // and load the index.html of the app.
   mainWindow.loadURL(url.format({
@@ -58,3 +59,24 @@ app.on('activate', function () {
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
+
+
+
+ipc.on('import_images', (event, arg) => {
+  let opts = {properties: ['openFile', 'multiSelections'],
+              filters: [{name: 'Images', extensions: ['jpg', 'png', 'gif']}]}
+  dialog.showOpenDialog(opts, function (files) {
+    if (files) event.sender.send('import_images-back', files)
+  })
+})
+
+ipc.on('import_folders', (event, arg) => {
+  let opts = {properties: ['openDirectory', 'multiSelections']}
+  dialog.showOpenDialog(opts, function (dirs) {
+    if (dirs) event.sender.send('import_folders-back', dirs)
+  })
+})
+
+ipc.on('quit', (event, arg) => {
+  app.quit()
+})

@@ -1,19 +1,85 @@
 <!DOCTYPE html>
-<html>
+<html class="mdc-typography">
   <head>
-    <meta charset="UTF-8">
-    <title>Hello World!</title>
-  </head>
-  <body>
-    <h1>Hello World!</h1>
-    <!-- All of the Node.js APIs are available in this renderer process. -->
-    We are using Node.js <script>document.write(process.versions.node)</script>,
-    Chromium <script>document.write(process.versions.chrome)</script>,
-    and Electron <script>document.write(process.versions.electron)</script>.
-  </body>
+    <title>Mphoto</title>
+    <link rel="stylesheet" href="node_modules/material-components-web/dist/material-components-web.css">
+    <link rel="stylesheet" href="style/icons.css">
+    <link rel="stylesheet" href="style/manager.css">
+    <style>
 
-  <script>
-    // You can also require other files to run in this process
-    require('./renderer.js')
-  </script>
+    </style>
+  </head>
+
+  <body class="mdc-typography demo-body">
+    <header class="mdc-toolbar mdc-toolbar--fixed">
+      <div class="mdc-toolbar__row">
+        <section class="mdc-toolbar__section mdc-toolbar__section--align-start">
+          <span class="mdc-toolbar__title">Mphoto</span>
+        </section>
+        <section class="mdc-toolbar__section mdc-toolbar__section--align-end" role="toolbar">
+          <a id="zoom_out" href="#" class="material-icons">zoom_out</a>
+          <a id="zoom_in" href="#" class="material-icons">zoom_in</a>
+          <!-- Menu  -->
+          <div class="mdc-menu-anchor">
+            <a id="menu" href="#" class="material-icons">menu</a>
+            <div class="mdc-simple-menu" tabindex="-1">
+              <ul class="mdc-simple-menu__items mdc-list" role="menu" aria-hidden="true">
+                <li class="mdc-list-item" role="menuitem" tabindex="0" name="import_images">Import Images</li>
+                <li class="mdc-list-item" role="menuitem" tabindex="0" name="import_folders">Import Folders</li>
+                <li class="mdc-list-item" role="menuitem" tabindex="0">##</li>
+                <li class="mdc-list-divider" role="separator"></li>
+                <li class="mdc-list-item" role="menuitem" tabindex="0">##</li>
+                <li class="mdc-list-item" role="menuitem" tabindex="0">##</li>
+                <li class="mdc-list-item" role="menuitem" tabindex="0">##</li>
+                <li class="mdc-list-item" role="menuitem" tabindex="0">##</li>
+                <li class="mdc-list-divider" role="separator"></li>
+                <li class="mdc-list-item" role="menuitem" tabindex="0" name="close">Close</li>
+                <li class="mdc-list-item" role="menuitem" tabindex="0" name="quit">Quit</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+      </div>
+    </header>
+    <!-- Side -->
+    <div class="demo-content mdc-toolbar-fixed-adjust">
+     <nav class="mdc-permanent-drawer">
+       <div class="mdc-list-group">
+         <nav class="mdc-list">
+           <a class="mdc-list-item mdc-permanent-drawer--selected" href="#">
+             <i class="material-icons mdc-list-item__start-detail" aria-hidden="true">inbox</i>All
+           </a>
+           <!-- <a class="mdc-list-item" href="#">
+             <i class="material-icons mdc-list-item__start-detail" aria-hidden="true">drafts</i>Drafts
+           </a> -->
+         </nav>
+         <hr class="mdc-list-divider">
+         <nav class="mdc-list">
+           <!-- <a class="mdc-list-item" href="#">
+             <i class="material-icons mdc-list-item__start-detail" aria-hidden="true">email</i>All Mail
+           </a>
+           <a class="mdc-list-item" href="#">
+             <i class="material-icons mdc-list-item__start-detail" aria-hidden="true">delete</i>Trash
+           </a> -->
+         </nav>
+       </div>
+     </nav>
+      <main class="demo-main">
+        <div class="mdc-grid-list">
+        <ul id="images" class="mdc-grid-list__tiles">
+          <!-- Photos here  -->
+        </ul>
+        </div>
+      </main>
+    </div>
+    <script type="text/javascript">
+      let $ = jQuery = require('./js/jquery.js');
+      let _ = require('./js/underscore.js');
+      // require('./semantic/semantic.js');
+      // require('./js/windows_buttons');
+      require('./js/manager.js');
+    </script>
+    <!-- <script src="node_modules/material-components-web/dist/material-components-web.js"></script> -->
+    <!-- <script>mdc.autoInit()</script> -->
+  </body>
 </html>

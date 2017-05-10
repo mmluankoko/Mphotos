@@ -20,6 +20,8 @@
     "electron": "~1.6.2"
   },
   "dependencies": {
+    "electron-config": "^1.0.0",
+    "electron-json-storage": "^3.0.5",
     "material-components-web": "^0.10.0"
   }
 }
