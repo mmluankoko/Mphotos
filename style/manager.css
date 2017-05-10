@@ -1,4 +1,12 @@
-::-webkit-scrollbar {display: none;}
+/*::-webkit-scrollbar {display: none;}*/
+::-webkit-scrollbar {
+    width: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+    border-radius: 4px;
+    background-color: #9E9E9E;
+}
 
 .mdc-toolbar-demo {
     margin: 0px;
@@ -35,6 +43,8 @@ html {
 }
 
 .demo-main {
+  height: calc(100vh-64px);
+  overflow: auto;
   padding-left: 16px;
   padding-top: 16px;
 }

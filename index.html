@@ -21,12 +21,12 @@
           <a id="zoom_in" href="#" class="material-icons">zoom_in</a>
           <!-- Menu  -->
           <div class="mdc-menu-anchor">
-            <a id="menu" href="#" class="material-icons">menu</a>
-            <div class="mdc-simple-menu" tabindex="-1">
+            <a href="#" class="material-icons menuButton">menu</a>
+            <div class="mdc-simple-menu menu" tabindex="-1">
               <ul class="mdc-simple-menu__items mdc-list" role="menu" aria-hidden="true">
-                <li class="mdc-list-item" role="menuitem" tabindex="0" name="import_images">Import Images</li>
-                <li class="mdc-list-item" role="menuitem" tabindex="0" name="import_folders">Import Folders</li>
-                <li class="mdc-list-item" role="menuitem" tabindex="0">##</li>
+                <li class="mdc-list-item" role="menuitem" tabindex="0" name="import_images">Import Images...</li>
+                <li class="mdc-list-item" role="menuitem" tabindex="0" name="import_folders">Import Folders...</li>
+                <li class="mdc-list-item" role="menuitem" tabindex="0" name="remove_all_images">Remove All Images</li>
                 <li class="mdc-list-divider" role="separator"></li>
                 <li class="mdc-list-item" role="menuitem" tabindex="0">##</li>
                 <li class="mdc-list-item" role="menuitem" tabindex="0">##</li>
@@ -42,12 +42,12 @@
       </div>
     </header>
     <!-- Side -->
-    <div class="demo-content mdc-toolbar-fixed-adjust">
-     <nav class="mdc-permanent-drawer">
+    <div id="side" class="demo-content mdc-toolbar-fixed-adjust">
+     <nav class="mdc-permanent-drawer contextMenu_sideButton">
        <div class="mdc-list-group">
          <nav class="mdc-list">
-           <a class="mdc-list-item mdc-permanent-drawer--selected" href="#">
-             <i class="material-icons mdc-list-item__start-detail" aria-hidden="true">inbox</i>All
+           <a class="mdc-list-item mdc-permanent-drawer--selected contextMenu_sideItemButton" href="#">
+             <i class="material-icons mdc-list-item__start-detail" aria-hidden="true">photo_library</i>All
            </a>
            <!-- <a class="mdc-list-item" href="#">
              <i class="material-icons mdc-list-item__start-detail" aria-hidden="true">drafts</i>Drafts
@@ -67,11 +67,71 @@
       <main class="demo-main">
         <div class="mdc-grid-list">
         <ul id="images" class="mdc-grid-list__tiles">
-          <!-- Photos here  -->
+          <!-- Images here  -->
         </ul>
         </div>
       </main>
     </div>
+
+    <!-- Flow free elements -->
+    <!-- Snackbar -->
+    <div id="snackbar" class="mdc-snackbar" aria-live="assertive" aria-atomic="true" aria-hidden="true">
+      <div class="mdc-snackbar__text"></div>
+      <div class="mdc-snackbar__action-wrapper">
+        <button type="button" class="mdc-button mdc-snackbar__action-button"></button>
+      </div>
+    </div>
+    <!-- Context menu in side -->
+    <div class="mdc-simple-menu contextMenu contextMenu_side" tabindex="-1" style="top:0; left: 0;">
+      <ul class="mdc-simple-menu__items mdc-list" role="menu" aria-hidden="true">
+        <li class="mdc-list-item" role="menuitem" tabindex="0" name="side_new">New Category...</li>
+        <li class="mdc-list-item" role="menuitem" tabindex="0">Side</li>
+      </ul>
+    </div>
+    <!-- Context menu on side item -->
+    <div class="mdc-simple-menu contextMenu contextMenu_sideItem" tabindex="-1" style="top:0; left: 0;">
+      <ul class="mdc-simple-menu__items mdc-list" role="menu" aria-hidden="true">
+        <li class="mdc-list-item" role="menuitem" tabindex="0">A Menu Item</li>
+        <li class="mdc-list-item" role="menuitem" tabindex="0">SideItem</li>
+      </ul>
+    </div>
+    <!-- Context menu on image -->
+    <div class="mdc-simple-menu contextMenu contextMenu_image" tabindex="-1" style="top:0; left: 0;">
+      <ul class="mdc-simple-menu__items mdc-list" role="menu" aria-hidden="true">
+        <li class="mdc-list-item" role="menuitem" tabindex="0" name="image_open">Open...</li>
+        <li class="mdc-list-item" role="menuitem" tabindex="0" name="image_open_folder">Open Folder...</li>
+        <li class="mdc-list-item" role="menuitem" tabindex="0" name="image_remove_from_lib">Remove From Library</li>
+        <!-- <li class="mdc-list-item" role="menuitem" tabindex="0" name="image_remove_from_disk">Remove From Disk</li> -->
+      </ul>
+    </div>
+
+    <!-- Side_new dialog -->
+    <aside id="dialog_side_new" style="visibility:hidden" class="mdc-dialog" role="alertdialog"
+    aria-labelledby="my-mdc-dialog-label" aria-describedby="my-mdc-dialog-description">
+      <div class="mdc-dialog__surface">
+        <header class="mdc-dialog__header">
+          <h2 id="my-mdc-dialog-label" class="mdc-dialog__header__title">
+            New category
+          </h2>
+        </header>
+        <!-- <section class="mdc-dialog__body">
+          Let Google help apps determine location. This means sending anonymous location data to Google, even when no apps are running.
+        </section> -->
+        <section class="mdc-dialog__body">
+          <div class="mdc-textfield">
+            <input type="text" id="my-textfield" class="mdc-textfield__input" required>
+            <label class="mdc-textfield__label" for="my-textfield">name</label>
+          </div>
+        </section>
+
+        <footer class="mdc-dialog__footer">
+          <button type="button" class="mdc-button mdc-dialog__footer__button mdc-dialog__footer__button--cancel">Decline</button>
+          <button type="button" class="mdc-button mdc-dialog__footer__button accept">Accept</button>
+        </footer>
+      </div>
+      <div class="mdc-dialog__backdrop"></div>
+    </aside>
+
     <script type="text/javascript">
       let $ = jQuery = require('./js/jquery.js');
       let _ = require('./js/underscore.js');
