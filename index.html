@@ -17,11 +17,11 @@
           <span class="mdc-toolbar__title">Mphoto</span>
         </section>
         <section class="mdc-toolbar__section mdc-toolbar__section--align-end" role="toolbar">
-          <a id="zoom_out" href="#" class="material-icons">zoom_out</a>
-          <a id="zoom_in" href="#" class="material-icons">zoom_in</a>
+          <a id="zoom_out" class="material-icons">zoom_out</a>
+          <a id="zoom_in" class="material-icons">zoom_in</a>
           <!-- Menu  -->
           <div class="mdc-menu-anchor">
-            <a href="#" class="material-icons menuButton">menu</a>
+            <a class="material-icons menuButton">menu</a>
             <div class="mdc-simple-menu menu" tabindex="-1">
               <ul class="mdc-simple-menu__items mdc-list" role="menu" aria-hidden="true">
                 <li class="mdc-list-item" role="menuitem" tabindex="0" name="import_images">Import Images...</li>
@@ -45,10 +45,11 @@
     <div id="side" class="demo-content mdc-toolbar-fixed-adjust">
      <nav class="mdc-permanent-drawer contextMenu_sideButton">
        <div class="mdc-list-group">
-         <nav class="mdc-list">
-           <a class="mdc-list-item mdc-permanent-drawer--selected contextMenu_sideItemButton" href="#">
-             <i class="material-icons mdc-list-item__start-detail" aria-hidden="true">photo_library</i>All
-           </a>
+         <nav id="side_items" class="mdc-list">
+           <!-- <a class="mdc-list-item mdc-permanent-drawer--selected contextMenu_sideItemButton" href="#all">
+             <i class="material-icons mdc-list-item__start-detail" aria-hidden="true">photo_library</i>
+             <p data-cat="all">All</p>
+           </a> -->
            <!-- <a class="mdc-list-item" href="#">
              <i class="material-icons mdc-list-item__start-detail" aria-hidden="true">drafts</i>Drafts
            </a> -->
@@ -85,23 +86,26 @@
     <div class="mdc-simple-menu contextMenu contextMenu_side" tabindex="-1" style="top:0; left: 0;">
       <ul class="mdc-simple-menu__items mdc-list" role="menu" aria-hidden="true">
         <li class="mdc-list-item" role="menuitem" tabindex="0" name="side_new">New Category...</li>
-        <li class="mdc-list-item" role="menuitem" tabindex="0">Side</li>
       </ul>
     </div>
     <!-- Context menu on side item -->
     <div class="mdc-simple-menu contextMenu contextMenu_sideItem" tabindex="-1" style="top:0; left: 0;">
       <ul class="mdc-simple-menu__items mdc-list" role="menu" aria-hidden="true">
-        <li class="mdc-list-item" role="menuitem" tabindex="0">A Menu Item</li>
-        <li class="mdc-list-item" role="menuitem" tabindex="0">SideItem</li>
+        <li class="mdc-list-item" role="menuitem" tabindex="0">##</li>
+        <li class="mdc-list-item" role="menuitem" tabindex="0">##</li>
       </ul>
     </div>
     <!-- Context menu on image -->
     <div class="mdc-simple-menu contextMenu contextMenu_image" tabindex="-1" style="top:0; left: 0;">
-      <ul class="mdc-simple-menu__items mdc-list" role="menu" aria-hidden="true">
+      <ul id="image_context_menu" class="mdc-simple-menu__items mdc-list" role="menu" aria-hidden="true">
         <li class="mdc-list-item" role="menuitem" tabindex="0" name="image_open">Open...</li>
         <li class="mdc-list-item" role="menuitem" tabindex="0" name="image_open_folder">Open Folder...</li>
         <li class="mdc-list-item" role="menuitem" tabindex="0" name="image_remove_from_lib">Remove From Library</li>
         <!-- <li class="mdc-list-item" role="menuitem" tabindex="0" name="image_remove_from_disk">Remove From Disk</li> -->
+        <li class="mdc-list-divider" role="separator"></li>
+        <!-- <li class="mdc-list-item" role="menuitem" tabindex="0" name="move_to">Move To...</li> -->
+
+
       </ul>
     </div>
 

@@ -1,14 +1,19 @@
+const fs = require('fs')
+const path = require('path')
+
 const electron = require('electron')
 const ipc = electron.ipcRenderer
 const remote = electron.remote
-const fs = require('fs')
-const path = require('path')
+
 const storage = require('electron-json-storage')
 const Config = require('electron-config')
 const open = require('opn');
+
+const mdc = require('../node_modules/material-components-web/dist/material-components-web.js')
+
 const managerConfig = new Config({name:'managerConfig'})
 const library = new Config({name:'library'})
-const mdc = require('../node_modules/material-components-web/dist/material-components-web.js')
+
 let snackbar, curContextMenuItem, dialog_side_new
 
 // Menu operations
@@ -58,21 +63,18 @@ contextMenuOps.image_remove_from_disk = () => {
   console.log('contextMenuOps.image_remove_from_disk')
   // (curContextMenuItem.attr('src'))
 }
-
-// IPC handlers
-ipc.on('import_folders-back', function (event, dirs) {
-  let all = []
-  for (let i = 0; i < dirs.length; i++) {
-    let images = fs.readdirSync(dirs[i]).filter(isImage)
-    for (let j = 0; j < images.length; j++) {
-      all.push(path.join(dirs[i],images[j]))
-    }
+contextMenuOps.move_to = (c) => {
+  console.log('contextMenuOps.move_to('+c+')')
+  let tmp = library.get(c)
+  let u = curContextMenuItem.attr('src')
+  if (!tmp.includes(u)) {
+    tmp.push(u)
+    showSnackbar('1 image moved to ' + c +'.')
+    library.set(c,tmp)
+  } else {
+    showSnackbar('0 image moved. (already there)')
   }
-  importImages(all)
-})
-ipc.on('import_images-back', function (event, files) {
-  importImages(files)
-})
+}
 
 // Initialization
 $(document).ready(() => init())
@@ -83,19 +85,29 @@ function init(){
   }
   if (!library.has('all')) {
     library.set('all',[])
-  } else {
-    addImages(library.get('all'))
   }
-  console.log(library.get('all'))
   // UI initialization
-  $('#side .mdc-list-item').click(function(){
-    $('#side .mdc-list-item').removeClass('mdc-permanent-drawer--selected')
-    $(this).addClass('mdc-permanent-drawer--selected')
-  })
+  for (let key in library.store) {
+    let cat = $('<a class="mdc-list-item contextMenu_sideItemButton" href="#'+key+'">'+
+                 '<i class="material-icons mdc-list-item__start-detail" aria-hidden="true">photo_library</i>'+
+                 '<p data-cat="'+key+'">'+key+'</p>' +
+                 '</a>')
+    if (key === 'all') {
+      cat.addClass('mdc-permanent-drawer--selected')
+    } else {
+      let contextCat = $('<li class="mdc-list-item" role="menuitem" tabindex="0" data-cat="'+key+'"name="move_to">Move To '+key+'</li>')
+      $('#image_context_menu').append(contextCat)
+    }
+    cat.click(function(){
+      $('#side .mdc-list-item').removeClass('mdc-permanent-drawer--selected')
+      $(this).addClass('mdc-permanent-drawer--selected')
+    })
+    $('#side_items').append(cat)
+  }
+
   $('.mdc-grid-tile').css('width',managerConfig.get('imageSize'))
   $('#zoom_in').click(() => zoom('in'))
   $('#zoom_out').click(() => zoom('out'))
-
 
   // Snackbar
   snackbar = new mdc.snackbar.MDCSnackbar(document.getElementById('snackbar'));
@@ -119,10 +131,14 @@ function init(){
             let detail = evt.detail
             let op = $(detail.item).attr('name')
             console.log(detail.item.textContent.trim())
-            contextMenuOps[op]()
+            if (op==='move_to') {
+              let cat = $(detail.item).attr('data-cat')
+              contextMenuOps['move_to'](cat)
+            } else {
+              contextMenuOps[op]()
+            }
     });
   }
-
   $(document).contextmenu(function(e){
     console.log(e.target)
     let target = $(e.target)
@@ -155,31 +171,36 @@ function init(){
   dialog_side_new = new mdc.dialog.MDCDialog(document.querySelector('#dialog_side_new'));
   $('#dialog_side_new .accept').click(function(){
     let value = $('#dialog_side_new input').val()
-    console.log(value);
+    addCat(value)
+    $('#dialog_side_new input').val('')
+    dialog_side_new.close()
   })
 
+  // IPC
+  ipc.on('import_folders-back', function (event, dirs) {
+    let all = []
+    for (let i = 0; i < dirs.length; i++) {
+      let images = fs.readdirSync(dirs[i]).filter(isImage)
+      for (let j = 0; j < images.length; j++) {
+        all.push(path.join(dirs[i],images[j]))
+      }
+    }
+    importImages(all)
+  })
+  ipc.on('import_images-back', function (event, files) {
+    importImages(files)
+  })
 
-  // dialog.listen('MDCDialog:cancel', function() {
-  //   console.log('canceled');
-  // })
+  // Routers
+  window.addEventListener("hashchange", () => {
+    let h = window.location.hash.slice(1)
+    console.log(h)
+    clearImages()
+    showImages(library.get(h))
+  });
 
-  // document.querySelector('#default-dialog-activation').addEventListener('click', function (evt) {
-  //   dialog.lastFocusedTarget = evt.target;
-  //   dialog.show();
-  // })
-
-
-
-  console.log(library.path)
+  showImages(library.get('all'))
 }
-
-
-
-// for (let i = 0; i <10; i++) {
-//   addImage('photo.jpg')
-// }
-
-
 
 // UI functions
 function zoom(op){
@@ -205,12 +226,13 @@ function showSnackbar(text){
           };
   snackbar.show(data)
 }
-function addImages(urls){
+
+function showImages(urls){
   for (let i = 0; i < urls.length; i++) {
-    addImage(urls[i])
+    showImage(urls[i])
   }
 }
-function addImage(url){
+function showImage(url){
   let image = '<li class="mdc-grid-tile" style="width: '+ managerConfig.get('imageSize') +'">' +
             '<div class="mdc-grid-tile__primary">' +
                '<div src="'+url+'" style="background-image: url('+ url +');" class="mdc-grid-tile__primary-content contextMenu_imageButton" /></div>' +
@@ -218,16 +240,19 @@ function addImage(url){
   $('#images').append(image)
 }
 
-function clearAllImages(){
+function clearImages(){
   $('#images').empty()
 }
+
+
+
 
 // Data functions
 function importImages(urls){
   let lib = library.get('all')
   let tmp = merge(lib, urls)
   library.set('all', tmp.new)
-  addImages(tmp.newAdded)
+  if (window.location.hash==='#all') {showImages(tmp.newAdded)}
   let lenAdded = tmp.newAdded.length
   let lenDup = urls.length - lenAdded
   let message = ''
@@ -245,7 +270,7 @@ function importImages(urls){
 }
 function removeAllImages(){
   library.set('all', [])
-  clearAllImages()
+  clearImages()
 }
 function removeImage(url){
   let tmp = library.get('all')
@@ -253,6 +278,23 @@ function removeImage(url){
   library.set('all', tmp)
   showSnackbar('1 image removed.')
 }
+function addCat(v){
+  let newCat = $('<a class="mdc-list-item contextMenu_sideItemButton" href="#'+v.trim().toLowerCase()+'">'+
+               '<i class="material-icons mdc-list-item__start-detail" aria-hidden="true">photo_library</i>'+
+               '<p data-cat="'+v.trim().toLowerCase()+'">'+v+'</p>' +
+               '</a>')
+  newCat.click(function(){
+    $('#side .mdc-list-item').removeClass('mdc-permanent-drawer--selected')
+    $(this).addClass('mdc-permanent-drawer--selected')
+  })
+  $('#side_items').append(newCat)
+  library.set(v.trim().toLowerCase(),[])
+  let newContextCat = $('<li class="mdc-list-item" role="menuitem" tabindex="0" data-cat="'+v+'"name="move_to">Move To '+v+'</li>')
+  $('#image_context_menu').append(newContextCat)
+}
+
+
+
 
 
 // Helper functions
