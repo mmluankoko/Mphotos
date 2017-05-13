@@ -38,6 +38,9 @@ menuOps.close = () => {
   console.log('menuOps.close')
   remote.getCurrentWindow().close()
 }
+menuOps.debug_lib = () => {
+  console.log(library.store)
+}
 
 let contextMenuOps = {}
 contextMenuOps.side_new = () => {
@@ -249,6 +252,7 @@ function clearImages(){
 
 // Data functions
 function importImages(urls){
+  urls = urls.map((item) => decodeURIComponent(item))
   let lib = library.get('all')
   let tmp = merge(lib, urls)
   library.set('all', tmp.new)
@@ -269,13 +273,18 @@ function importImages(urls){
   showSnackbar(message)
 }
 function removeAllImages(){
-  library.set('all', [])
+  for (let key in library.store) {
+    library.set(key,[])
+  }
   clearImages()
+  showSnackbar('All images removed. (from library)')
 }
 function removeImage(url){
-  let tmp = library.get('all')
-  tmp.splice(tmp.indexOf(url), 1)
-  library.set('all', tmp)
+  for (let key in library.store) {
+    let tmp = library.get(key)
+    tmp.splice(tmp.indexOf(url), 1)
+    library.set(key, tmp)
+  }
   showSnackbar('1 image removed.')
 }
 function addCat(v){
